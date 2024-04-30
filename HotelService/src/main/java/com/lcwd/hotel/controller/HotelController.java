@@ -1,6 +1,5 @@
 package com.lcwd.hotel.controller;
 
-import com.lcwd.hotel.HotelRepository;
 import com.lcwd.hotel.entities.Hotel;
 import com.lcwd.hotel.services.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ public class HotelController {
 
     // get one
     @GetMapping("/{hotelId}")
-    public ResponseEntity<Object> getOne(String hotelId) {
+    public ResponseEntity<Object> getOne(@PathVariable String hotelId) {
         Hotel hotel = hotelService.getOne(hotelId);
         return new ResponseEntity<>(hotel, HttpStatus.OK);
 
