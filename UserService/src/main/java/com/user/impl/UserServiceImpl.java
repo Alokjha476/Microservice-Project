@@ -8,13 +8,10 @@ import com.user.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.amqp.RabbitTemplateConfigurer;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -57,7 +54,7 @@ public class UserServiceImpl implements UserService {
         // fetch rating of the above user from RATING SERVICE
         //http://localhost:8083/ratings/users/513c3bc1-3357-4f0f-8595-0bc31741b28d
         Rating[] ratingOfUser = restTemplate.getForObject
-                ("http://localhost:8083/ratings/users/" + user.getUserId(), Rating[].class);
+                ("http://RATINGSERVICE/ratings/users/" + user.getUserId(), Rating[].class);
         assert ratingOfUser != null;
         logger.info(" {} ", (Object) ratingOfUser);
 
@@ -68,7 +65,7 @@ public class UserServiceImpl implements UserService {
         List<Rating> ratingList = ratings.stream().peek(rating -> { // map call every rating continuously // peek-> use for debugging
             // when the elements streaming and processing
             ResponseEntity<Hotel> forEntity = restTemplate.getForEntity // fetch the hotel with the help of api using rating
-                    ("http://localhost:8082/hotels/" + rating.getHotelId(), Hotel.class);
+                    ("http://HOTELSERVICE/hotels/" + rating.getHotelId(), Hotel.class);
             Hotel hotel = forEntity.getBody();
             logger.info("response status code : {}", forEntity.getStatusCode());
             rating.setHotel(hotel);
