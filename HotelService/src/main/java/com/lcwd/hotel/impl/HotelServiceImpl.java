@@ -1,6 +1,6 @@
 package com.lcwd.hotel.impl;
 
-import com.lcwd.hotel.HotelRepository;
+import com.lcwd.hotel.repository.HotelRepository;
 import com.lcwd.hotel.entities.Hotel;
 import com.lcwd.hotel.services.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,7 @@ import java.util.UUID;
 public class HotelServiceImpl implements HotelService {
     @Autowired
     private HotelRepository hotelRepository;
+
     @Override
     public Hotel craeteHotel(Hotel hotel) {
       String randomId =   UUID.randomUUID().toString();
@@ -26,7 +27,7 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public Hotel getOne(String hotelId) {
+    public Hotel getHotel(String hotelId) {
         return hotelRepository.findById(hotelId).orElseThrow(()->new RuntimeException("Id not found"));
     }
 }

@@ -26,14 +26,14 @@ public class RatingController {
     //get by user id
     @GetMapping("/users/{userId}")
     public ResponseEntity<Object> getRatingByUserId(@PathVariable String userId) {
-        return ResponseEntity.ok(ratingService.findByUserId(userId));
+        return ResponseEntity.ok(ratingService.getRatingByUserId(userId));
 
     }
 
     // get by hotel id
     @GetMapping("/hotels/{hotelId}")
     public ResponseEntity<Object> getRatingByHotelId(@PathVariable String hotelId) {
-        return ResponseEntity.ok(ratingService.findByHotelId(hotelId));
+        return ResponseEntity.ok(ratingService.getRatingByHotelId(hotelId));
 
     }
 
