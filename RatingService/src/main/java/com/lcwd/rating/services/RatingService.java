@@ -11,11 +11,11 @@ public interface RatingService {
 
 
 
-    // get All
+    // get All ratings
     List<Rating> ratingList();
 
 
-    List<Rating> findByUserId(String userId);
-    List<Rating> findByHotelId(String hotelId);
+    List<Rating> getRatingByUserId(String userId);
+    List<Rating> getRatingByHotelId(String hotelId);
 
 }
