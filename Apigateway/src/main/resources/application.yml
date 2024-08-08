@@ -7,20 +7,21 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: USERSERVICE
-          uri: lb://USERSERVICE
+        - id: UserService
+          uri: http://localhost:8081
           predicates:
             - Path=/users/**
 
-            - id: HOTELSERVICE
-              uri: lb://HOTELSERVICE
-              predicates:
-                - Path=/hotels/**
+#        - id: HotelService
+#          uri: lb://HOTELSERVICE
+#          predicates:
+#            - Path=/hotels/**
+#
+#        - id: RatingService
+#          uri: lb://RATINGSERVICE
+#          predicates:
+#            - Path=/ratings/**
 
-            - id: RATINGSERVICE
-              uri: lb://RATINGSERVICE
-              predicates:
-                - Path=/ratings/**
 eureka:
   instance:
     prefer-ip-address: true
