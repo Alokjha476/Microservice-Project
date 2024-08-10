@@ -8,19 +8,19 @@ spring:
     gateway:
       routes:
         - id: UserService
-          uri: http://localhost:8081
+          uri: lb://USERSERVICE
           predicates:
             - Path=/users/**
 
-#        - id: HotelService
-#          uri: lb://HOTELSERVICE
-#          predicates:
-#            - Path=/hotels/**
+        - id: HotelService
+          uri: lb://HOTELSERVICE
+          predicates:
+            - Path=/hotels/**
 #
-#        - id: RatingService
-#          uri: lb://RATINGSERVICE
-#          predicates:
-#            - Path=/ratings/**
+        - id: RatingService
+          uri: lb://RATINGSERVICE
+          predicates:
+            - Path=/ratings/**
 
 eureka:
   instance:

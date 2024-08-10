@@ -8,12 +8,11 @@ import com.user.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -21,12 +20,13 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private HotelService hotelService;
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
+    private final CircuitBreakerFactory cb;
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    public UserServiceImpl(RestTemplate restTemplate) {
+    public UserServiceImpl(RestTemplate restTemplate, CircuitBreakerFactory cb) {
         this.restTemplate = restTemplate;
+        this.cb = cb;
     }
 
     @Override
@@ -46,15 +46,49 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("UserId not found:"));
-        ArrayList<Rating> ratingOfUser = restTemplate.getForObject
-                ("http://RATINGSERVICE/ratings/users/" + user.getUserId(), ArrayList.class);
+        List<Rating> ratingOfUser = cb
+                .create("rating")
+                .run(() -> restTemplate.getForObject("http://RATINGSERVICE/ratings/users/" + user.getUserId(), ArrayList.class),
+                        throwable -> new ArrayList<>()
+                );
         logger.info("{}", ratingOfUser);
         user.setRatings(ratingOfUser);
         return user;
     }
 
+//    private List<Rating> defaultRatingList() {
+//        Rating rating = new Rating();
+//        rating.setRating(5);
+//        rating.setRatingId("12345654323456");
+//        rating.setUserId("");
+//        rating.setFeedback("fuck");
+//
+//        return Collections.singletonList(rating);
+//    }
+
+    @Override
+    public void deleteUser() {
+        userRepository.deleteAll();
+    }
+
+    @Override
+    public User updateUser(String userId, User userDetails) {
+        Optional<User> existingUser = userRepository.findById(userId);
+        if (existingUser.isPresent()) {
+            User user1 = existingUser.get();
+            user1.setName(userDetails.getName());
+            user1.setEmail(userDetails.getEmail());
+            user1.setAbout(userDetails.getAbout());
+            user1.setRatings(userDetails.getRatings());
+            userRepository.save(user1);
+
+        }
+        return null;
+    }
+
+
 //    @Override
-//    public User getUser(String userId) {
+//    public User getUser1(String userId) {
 //        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Id not found"));
 //
 //        // fetch rating of the above user from RATING SERVICE

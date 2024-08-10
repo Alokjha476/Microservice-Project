@@ -31,7 +31,7 @@ public class HotelController {
     }
 
     // get all
-    @GetMapping
+    @GetMapping("/getAll")
     public ResponseEntity<Object> getAll() {
         List<Hotel> hotels = hotelService.getAll();
         return new ResponseEntity<>(hotels, HttpStatus.OK);

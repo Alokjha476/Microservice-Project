@@ -12,7 +12,11 @@ public interface UserService {
 
     User getUser(String userId);
 
-    // TODO: delete
-    // TODO: update
+    void deleteUser();
+
+    User updateUser(String userId, User user);
+
+
+
 }
 
