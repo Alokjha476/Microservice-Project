@@ -14,8 +14,17 @@ public class GlobalExceptionHandler {
 
         String message = ex.getMessage();
 
-        ApiResponse response = ApiResponse.builder().message(message).success(true).status(HttpStatus.NOT_FOUND).build();
+        ApiResponse response = ApiResponse.builder().
+                message(message).success(true).status(HttpStatus.NOT_FOUND).build();
 
         return new ResponseEntity<ApiResponse>(response, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(HotelIdNotFoundException.class)
+    public ResponseEntity<ApiResponse> handleHotelIdNotFoundException(HotelIdNotFoundException ex){
+        String msg = ex.getMessage();
+        ApiResponse response = ApiResponse.builder().message(msg).
+                success(true).status(HttpStatus.NOT_FOUND).build();
+        return new ResponseEntity<ApiResponse>(response, HttpStatus.NOT_FOUND);
+
     }
 }

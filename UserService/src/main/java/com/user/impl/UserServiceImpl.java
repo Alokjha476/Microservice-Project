@@ -1,7 +1,9 @@
 package com.user.impl;
 
+import com.user.entities.Hotel;
 import com.user.entities.Rating;
 import com.user.entities.User;
+import com.user.exception.HotelIdNotFoundException;
 import com.user.external.service.HotelService;
 import com.user.repositories.UserRepository;
 import com.user.services.UserService;
@@ -43,40 +45,24 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    // find user with ratings of the user
     @Override
     public User getUser(String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("UserId not found:"));
-        ArrayList<Rating> ratingOfUser = restTemplate.getForObject
-                ("http://RATINGSERVICE/ratings/users/" + user.getUserId(), ArrayList.class);
+        ArrayList<Rating> ratingOfUser = restTemplate.getForObject("http://RATINGSERVICE/ratings/users/" + user.getUserId(), ArrayList.class);
         logger.info("{}", ratingOfUser);
         user.setRatings(ratingOfUser);
         return user;
     }
 
-//    @Override
-//    public User getUser(String userId) {
-//        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Id not found"));
-//
-//        // fetch rating of the above user from RATING SERVICE
-//        Rating[] ratingOfUser = restTemplate.getForObject
-//                ("http://RATINGSERVICE/ratings/users/" + user.getUserId(), Rating[].class);
-//        logger.info(" {} ", ratingOfUser);
-//
-////        user.setRatings(ratingOfUser);
-//        //convert Array to List
-//        List<Rating> ratings = Arrays.stream(ratingOfUser).toList();
-//        List<Rating> ratingList = ratings.stream().peek(rating -> { // map call every rating continuously // peek-> use for debugging
-//            // when the elements streaming and processing
-//
-////            ResponseEntity<Hotel> forEntity = restTemplate.getForEntity // fetch the hotel with the help of api using rating
-////                    ("http://HOTELSERVICE/hotels/" + rating.getHotelId(), Hotel.class);
-//            Hotel hotel = hotelService.getHotel(rating.getHotelId());
-//            //  logger.info("response status code : {}", forEntity.getStatusCode());
-//            rating.setHotel(hotel);
-//        }).collect(Collectors.toList());
-//        // set the hotel rating
-//        user.setRatings(ratingList);
-//        return user;
-//    }
+    @Override
+    public User getUserByHotelId(String hotelId) throws HotelIdNotFoundException {
+        User user = userRepository.findById(hotelId).orElseThrow();
+        ArrayList<Hotel> hotelsList = restTemplate.getForObject("http://HOTELSERVICE/hotels/users" + user.getUserId(), ArrayList.class);
+        logger.info("{}", hotelsList);
+        user.setHotels(hotelsList);
+        return user;
+    }
+
 
 }

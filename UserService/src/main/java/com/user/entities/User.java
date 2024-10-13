@@ -30,6 +30,9 @@ public class User {
     @Transient
     private List<Rating> ratings = new ArrayList<>();
 
+    @Transient
+    private List<Hotel> hotels = new ArrayList<>();
+
 
 
 

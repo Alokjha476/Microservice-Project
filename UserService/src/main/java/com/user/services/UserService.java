@@ -12,6 +12,10 @@ public interface UserService {
 
     User getUser(String userId);
 
+    User getUserByHotelId(String hotelId);
+
+
+
     // TODO: delete
     // TODO: update
 }
